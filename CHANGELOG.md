@@ -11,6 +11,30 @@ section as part of the version bump (`.claude/rules/40-version-bump.md`).
 
 ## [Unreleased]
 
+## [0.9.100] - 2026-10-16
+
+### Fixed
+
+- Exporting to PDF or HTML embeds local images again. Since the symlink
+  check for exported images was added, every local image was replaced with
+  "Image not found", on every platform (#1555). Re-exporting an HTML folder
+  over an earlier export no longer fails for the same reason, and a failed
+  image check is now logged with its cause.
+- Switching between tabs returns each document to where you were reading.
+  Before, a document with a cursor in it always jumped back to that cursor,
+  even after you had scrolled away (#1556). Switching between WYSIWYG and
+  Source mode still follows the cursor.
+- Pressing F6 in a two-document split no longer makes the window flicker
+  endlessly between the two documents (#1554). Both panes now share one view
+  mode, and clicking a pane no longer switches the window to that
+  document's saved mode. Clicking a heading in the outline now moves only
+  the focused pane.
+
+### Security
+
+- Updated `rustls`, which VMark uses for its network connections, past four
+  newly published advisories (RUSTSEC-2026-0346 to 0349).
+
 ## [0.9.99] - 2026-10-13
 
 ### Changed
@@ -277,7 +301,8 @@ section as part of the version bump (`.claude/rules/40-version-bump.md`).
 
 - Raised the `markdown-it` version floor past GHSA-253c-mchw-3w2r.
 
-[Unreleased]: https://github.com/xiaolai/vmark/compare/v0.9.99...HEAD
+[Unreleased]: https://github.com/xiaolai/vmark/compare/v0.9.100...HEAD
+[0.9.100]: https://github.com/xiaolai/vmark/releases/tag/v0.9.100
 [0.9.99]: https://github.com/xiaolai/vmark/releases/tag/v0.9.99
 [0.9.98]: https://github.com/xiaolai/vmark/releases/tag/v0.9.98
 [0.9.97]: https://github.com/xiaolai/vmark/releases/tag/v0.9.97
