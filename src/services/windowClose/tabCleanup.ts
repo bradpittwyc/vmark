@@ -3,7 +3,8 @@
  *
  * Purpose: free everything keyed by a tab id — document, revision, unified
  *   history, lint, AI suggestions, forced-source flag, pending navigations,
- *   scroll offsets, save-target claim — when the tab leaves the tab store.
+ *   scroll offsets and the surface last shown, save-target claim — when the
+ *   tab leaves the tab store.
  *
  * Key decisions:
  *   - Cleanup is a CONSEQUENCE of removal, not a step each removal site
@@ -34,6 +35,7 @@ import { onTabRemoved } from "@/stores/tabRemovalBus";
 import { clearPendingContentSearchNav } from "@/services/navigation/contentSearchNavigation";
 import { clearPendingLintScroll } from "@/services/lint/lintNavigation";
 import { clearEditorScrollOffsets } from "@/services/editor/scrollPosition";
+import { forgetShownEditorSurface } from "@/services/editor/restoreChoice";
 import { forgetSaveTarget } from "@/services/persistence/saveTargetClaim";
 import { forgetLintTab } from "@/plugins/lint/docEpoch";
 
@@ -52,6 +54,7 @@ export function cleanupTabState(tabId: string): void {
   clearPendingContentSearchNav(tabId);
   clearPendingLintScroll(tabId);
   clearEditorScrollOffsets(tabId);
+  forgetShownEditorSurface(tabId);
   forgetLintTab(tabId);
   // A save still in flight for this tab must not re-point stores that no
   // longer describe an open document.
