@@ -9,8 +9,9 @@
  *   1. Sync registrations run first (`registerAllCommands`; idempotent — each
  *      register* is a no-op on the second call).
  *   2. The window-lifetime services start (`startRuntimeServices`, one disposer).
- *   3. Async Pandoc-format expansion runs next; the format list is
- *      not known until pandocExport.ts dynamically loads.
+ *   3. The Pandoc-format expansion runs next, synchronously: the format list
+ *      is a leaf module, so nothing — not the exporter chunk — is awaited
+ *      before the menu listeners are requested.
  *   4. The combined binding list is mounted via mountMenuCommands, whose
  *      COMPLETENESS is then signalled to `menuCommandsReady` — the barrier the
  *      window-ready handshake waits on — only from a setup that is still live:
@@ -133,7 +134,8 @@ const EDITOR_ACTION_BINDINGS: MenuCommandBinding[] = Object.entries(MENU_TO_ACTI
 );
 
 /**
- * Every menu binding known before the Pandoc formats load.
+ * Every menu binding except the per-format Pandoc ones, which
+ * `registerPandocFormatCommands` returns.
  *
  * Exported so a test can assert the property `mountMenuCommands`' preflight now
  * DEPENDS on: each command binding must name a command
@@ -211,7 +213,9 @@ export function useCommandBootstrap(): void {
     }
 
     let unlisten: UnlistenFn | null = null;
-    let cancelled = false;
+    // Aborted by the cleanup: tears this pass's listeners down at once, even
+    // while the mount is still in flight.
+    const pass = new AbortController();
 
     void (async () => {
       const bindings: MenuCommandBinding[] = [...STATIC_MENU_BINDINGS];
@@ -223,7 +227,7 @@ export function useCommandBootstrap(): void {
       let expanded = true;
 
       try {
-        const formats = await registerPandocFormatCommands();
+        const formats = registerPandocFormatCommands();
         for (const fmt of formats) {
           bindings.push({
             menuEvent: `menu:export-pandoc-${fmt}`,
@@ -247,20 +251,13 @@ export function useCommandBootstrap(): void {
       // an all-or-nothing mount turned one refused listener into a window with
       // no menu at all. A partial mount is kept — every item that bound still
       // works — and the incompleteness is logged and signalled, never hidden.
-      // Nothing to mount for a setup that is already gone. The
-      // Pandoc await above is the long one, so this is where a StrictMode
-      // cancellation almost always lands; `shouldAbort` covers the rest of the
-      // window, polled between each listener registration inside the mount.
-      // Without it a cancelled pass kept ITS listeners live for the whole
-      // remaining mount — overlapping the replay pass, which double-dispatched
-      // every menu event bound in that window.
-      if (cancelled) return;
+      // The signal reaches into the mount: a cancelled pass otherwise kept ITS
+      // listeners live until the mount finished — overlapping the replay pass,
+      // which double-dispatched every menu event bound in that window.
       try {
-        const { off, failed } = await mountMenuCommands(bindings, {
-          shouldAbort: () => cancelled,
-        });
-        if (cancelled) {
-          off();
+        const { off, failed } = await mountMenuCommands(bindings, { signal: pass.signal });
+        if (pass.signal.aborted) {
+          off(); // already torn down by the abort; idempotent
           return;
         }
         unlisten = off;
@@ -268,8 +265,8 @@ export function useCommandBootstrap(): void {
           menuError(`${failed.length} menu binding(s) could not mount:`, failed);
         }
         // The window-ready handshake waits on this instead of guessing how
-        // long the `await` above takes — it is a dynamic import, so no
-        // constant could bound it. Only from a setup that is still LIVE: a
+        // long the mount takes — IPC round trips that no constant could
+        // bound. Only from a setup that is still LIVE: a
         // StrictMode-cancelled first pass must not signal after removing its
         // listener and before the replay mounts one.
         signalMenuCommandsMounted(expanded && failed.length === 0);
@@ -277,12 +274,12 @@ export function useCommandBootstrap(): void {
         // Only the duplicate-binding preflight rejects now, and it means the
         // static binding list is malformed: nothing mounted, so nothing routes.
         menuError("Failed to mount menu commands:", err);
-        if (!cancelled) signalMenuCommandsMounted(false);
+        if (!pass.signal.aborted) signalMenuCommandsMounted(false);
       }
     })().catch((err) => appError("Command bootstrap failed:", err));
 
     return () => {
-      cancelled = true;
+      pass.abort();
       if (unlisten) unlisten();
       disposeEditorCommands();
       stopRuntimeServices();

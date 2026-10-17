@@ -23,6 +23,7 @@
  * @coordinates-with markdownPipeline/ — schema nodes must match pipeline converters
  * @coordinates-with editorPlugins.tiptap.ts — additional ProseMirror plugins
  * @coordinates-with hostAdapters.ts — the app-side values plugins are configured with
+ * @coordinates-with cjkLetterSpacingSetting.ts — the CJK spacing predicate, shared with export
  * @module services/assembly/tiptapExtensions
  */
 
@@ -109,6 +110,7 @@ import {
 } from "@/plugins/markdownArtifacts";
 import { wikiLinkPopupExtension } from "@/plugins/wikiLinkPopup";
 import { CJKLetterSpacing } from "@/plugins/cjkLetterSpacing";
+import { isCjkLetterSpacingOn } from "./cjkLetterSpacingSetting";
 import { sourcePeekInlineExtension } from "@/plugins/sourcePeekInline";
 import { smartSelectAllExtension } from "@/plugins/smartSelectAll/tiptap";
 import { inlineCodeBoundaryExtension } from "@/plugins/inlineCodeBoundary/tiptap";
@@ -239,7 +241,7 @@ export function buildExtensionList(config: TiptapExtensionConfig = {}): Extensio
     }),
     multiCursorExtension,
     aiSuggestionExtension.configure({ store: pluginStores.aiSuggestion }),
-    CJKLetterSpacing,
+    CJKLetterSpacing.configure({ isEnabled: isCjkLetterSpacingOn }),
     sourcePeekInlineExtension,
     smartSelectAllExtension,
     inlineCodeBoundaryExtension,
