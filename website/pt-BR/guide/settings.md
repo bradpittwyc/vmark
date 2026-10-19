@@ -140,7 +140,7 @@ Dois espaços é o estilo de quebra rígida mais compatível — funciona no Git
 
 | Configuração | Descrição | Padrão | Opções |
 |--------------|-----------|--------|--------|
-| Modo Fonte automático | Abrir arquivos acima de 1 MB no modo Fonte (pula o WYSIWYG para manter o desempenho fluido). Você pode mudar para WYSIWYG pela barra de status a qualquer momento | Ligado | Ligado / Desligado |
+| Modo Fonte automático | Abrir arquivos grandes no modo Fonte — arquivos acima de 1 MB ou markdown com 1.200+ blocos estimados (pula o WYSIWYG para manter o desempenho fluido). Você pode mudar para WYSIWYG pela barra de status a qualquer momento | Ligado | Ligado / Desligado |
 | Avisar acima do tamanho | Mostrar uma confirmação antes de abrir arquivos acima de 5 MB. Arquivos de 50 MB ou mais são sempre recusados | Ligado | Ligado / Desligado |
 
 Veja [Arquivos grandes](/pt-BR/guide/large-files) para a explicação completa de como arquivos grandes são tratados.

@@ -72,7 +72,7 @@ Rückgängig und Wiederholen überschreiten die Grenze zwischen WYSIWYG ⇄ Quel
 
 ### Große Dateien
 
-VMark öffnet Dateien über 1 MB automatisch im Quellmodus, damit sie in unter einer Sekunde geöffnet sind, warnt vor dem Öffnen von Dateien über 5 MB und lehnt Dateien über 50 MB ab. Schwellenwerte und Einstellungen finden Sie im Leitfaden [Große Dateien](./large-files.md).
+VMark öffnet große Dateien automatisch im Quellmodus, damit sie in unter einer Sekunde geöffnet sind — Dateien über 1 MB oder blockintensives Markdown mit 1.200+ geschätzten Blöcken —, warnt vor dem Öffnen von Dateien über 5 MB und lehnt Dateien über 50 MB ab. Schwellenwerte und Einstellungen finden Sie im Leitfaden [Große Dateien](./large-files.md).
 
 ### Quellvorschau
 

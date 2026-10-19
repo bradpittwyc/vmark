@@ -82,6 +82,7 @@ macro_rules! all_commands {
             watcher::stop_watching,
             files::tree_walk::list_directory_tree,
             files::ops::get_file_size_bytes,
+            files::block_count::count_markdown_blocks,
             files::ops::move_paths_to_trash,
             live_docs::collect_live_document_refs,
             live_docs::live_docs_response,

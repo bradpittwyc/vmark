@@ -72,7 +72,7 @@ Annulla e ripristina attraversano il confine WYSIWYG ⇄ Sorgente. Ogni cambio d
 
 ### File di Grandi Dimensioni
 
-VMark apre automaticamente in modalità Sorgente i file oltre 1 MB per un'apertura in meno di un secondo, avvisa prima di toccare file oltre 5 MB e rifiuta i file oltre 50 MB. Vedi la guida ai [File di grandi dimensioni](./large-files.md) per soglie e impostazioni.
+VMark apre automaticamente in modalità Sorgente i file di grandi dimensioni per un'apertura in meno di un secondo — file oltre 1 MB o Markdown denso di blocchi con 1.200+ blocchi stimati —, avvisa prima di toccare file oltre 5 MB e rifiuta i file oltre 50 MB. Vedi la guida ai [File di grandi dimensioni](./large-files.md) per soglie e impostazioni.
 
 ### Anteprima Sorgente
 

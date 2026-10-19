@@ -10,8 +10,10 @@
 //!   holds the folder on Unix)
 //! - `create` — `create_file_exclusive`, sharing `write`'s guard
 //! - `ops` — file size and move-to-trash
+//! - `block_count` — the markdown block estimate that routes WYSIWYG vs Source
 //! - `tree_walk` — `list_directory_tree`; `tree` — its hidden-entry rule
 
+pub(crate) mod block_count;
 pub(crate) mod create;
 pub(crate) mod open;
 pub(crate) mod ops;
