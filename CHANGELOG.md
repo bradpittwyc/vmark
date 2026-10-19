@@ -11,6 +11,19 @@ section as part of the version bump (`.claude/rules/40-version-bump.md`).
 
 ## [Unreleased]
 
+## [0.9.102] - 2026-10-20
+
+### Fixed
+
+- Opening a Markdown file made of many short blocks no longer freezes the
+  window. WYSIWYG builds a node for every block, so a 524 KB document with
+  3,773 blocks could keep the window unresponsive for 31–35 seconds on Linux.
+  VMark now estimates the block count before opening and sends block-dense
+  documents (1,200 or more estimated blocks) to Source mode, which opens in
+  about a second (#1570). The status bar's **Switch to WYSIWYG** link still
+  opens it in WYSIWYG on request, and the **Open large files in Source mode**
+  setting turns the automatic routing off.
+
 ## [0.9.101] - 2026-10-17
 
 ### Fixed
@@ -326,7 +339,8 @@ section as part of the version bump (`.claude/rules/40-version-bump.md`).
 
 - Raised the `markdown-it` version floor past GHSA-253c-mchw-3w2r.
 
-[Unreleased]: https://github.com/xiaolai/vmark/compare/v0.9.101...HEAD
+[Unreleased]: https://github.com/xiaolai/vmark/compare/v0.9.102...HEAD
+[0.9.102]: https://github.com/xiaolai/vmark/releases/tag/v0.9.102
 [0.9.101]: https://github.com/xiaolai/vmark/releases/tag/v0.9.101
 [0.9.100]: https://github.com/xiaolai/vmark/releases/tag/v0.9.100
 [0.9.99]: https://github.com/xiaolai/vmark/releases/tag/v0.9.99
