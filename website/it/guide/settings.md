@@ -141,7 +141,7 @@ Due spazi è lo stile di interruzione rigida più compatibile — funziona su Gi
 
 | Impostazione | Descrizione | Predefinito | Opzioni |
 |-------------|-------------|-------------|---------|
-| Modalità Sorgente automatica | Apri i file oltre 1 MB in modalità Sorgente (salta WYSIWYG per mantenere prestazioni fluide). Puoi passare a WYSIWYG dalla barra di stato in qualsiasi momento | Attivo | Attivo / Off |
+| Modalità Sorgente automatica | Apri i file di grandi dimensioni in modalità Sorgente — file oltre 1 MB o Markdown con 1.200+ blocchi stimati (salta WYSIWYG per mantenere prestazioni fluide). Puoi passare a WYSIWYG dalla barra di stato in qualsiasi momento | Attivo | Attivo / Off |
 | Avvisa sopra la dimensione | Mostra una richiesta di conferma prima di aprire file oltre 5 MB. I file di 50 MB o più vengono sempre rifiutati | Attivo | Attivo / Off |
 
 Vedi [File di grandi dimensioni](/it/guide/large-files) per la suddivisione completa di come vengono gestiti i file di grandi dimensioni.

@@ -21,6 +21,7 @@ export const CLAIM_PATHS = {
   imeGuard: "src/utils/imeGuard.ts",
   formatsGuide: "website/guide/formats.md",
   largeFilesGuide: "website/guide/large-files.md",
+  fileSizeThresholds: "src/utils/fileSizeThresholds.ts",
   nestingDepth: "src/utils/markdownPipeline/nestingDepth.ts",
   windowReady: "src/contexts/useWindowReady.ts",
   tauriConf: "src-tauri/tauri.conf.json",
@@ -149,6 +150,14 @@ export const CLAIMS = [
         ...equal(capture(t.largeFilesGuide, /nested more than (\d+) levels deep/, "large-files.md nesting sentence"), code, "large-files.md limit"),
       ];
     },
+  },
+  {
+    name: "block-density threshold",
+    files: ["largeFilesGuide", "fileSizeThresholds"],
+    check: (t) => equal(
+      capture(t.largeFilesGuide, /fewer than ([\d,]+) estimated blocks/, "large-files.md block threshold").replace(/,/g, ""),
+      capture(t.fileSizeThresholds, /SOURCE_MODE_DEFAULT_BLOCKS:\s*([\d_]+)/, "SOURCE_MODE_DEFAULT_BLOCKS").replace(/_/g, ""),
+      "block-density threshold (blocks)"),
   },
   {
     name: "menu readiness budget",

@@ -73,7 +73,7 @@ L'annulation et le rétablissement franchissent la frontière WYSIWYG ⇄ Source
 
 ### Fichiers volumineux
 
-VMark ouvre automatiquement les fichiers de plus de 1 Mo en mode Source pour une ouverture en moins d'une seconde, avertit avant de toucher aux fichiers de plus de 5 Mo et refuse les fichiers de plus de 50 Mo. Voir le guide [Fichiers volumineux](./large-files.md) pour les seuils et les paramètres.
+VMark ouvre automatiquement les fichiers volumineux en mode Source pour une ouverture en moins d'une seconde — fichiers de plus de 1 Mo ou markdown très dense en blocs avec 1 200+ blocs estimés —, avertit avant de toucher aux fichiers de plus de 5 Mo et refuse les fichiers de plus de 50 Mo. Voir le guide [Fichiers volumineux](./large-files.md) pour les seuils et les paramètres.
 
 ### Aperçu source
 

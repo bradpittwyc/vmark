@@ -73,7 +73,7 @@ Desfazer e refazer atravessam a fronteira WYSIWYG ⇄ Fonte. Cada troca de modo 
 
 ### Arquivos Grandes
 
-O VMark abre automaticamente arquivos acima de 1 MB no modo Fonte para uma abertura em menos de um segundo, avisa antes de mexer em arquivos acima de 5 MB e recusa arquivos acima de 50 MB. Veja o guia de [Arquivos Grandes](./large-files.md) para os limites e as configurações.
+O VMark abre automaticamente arquivos grandes no modo Fonte para uma abertura em menos de um segundo — arquivos acima de 1 MB ou markdown com muitos blocos e 1.200+ blocos estimados —, avisa antes de mexer em arquivos acima de 5 MB e recusa arquivos acima de 50 MB. Veja o guia de [Arquivos Grandes](./large-files.md) para os limites e as configurações.
 
 ### Peek de Fonte
 

@@ -142,7 +142,7 @@ Zwei Leerzeichen ist der kompatabelste Stil für harte Zeilenumbrüche — er fu
 
 | Einstellung | Beschreibung | Standard | Optionen |
 |-------------|-------------|---------|---------|
-| Auto-Quellmodus | Dateien über 1 MB im Quellmodus öffnen (überspringt WYSIWYG für flüssige Performance). Über die Statusleiste können Sie jederzeit zu WYSIWYG wechseln | Ein | Ein / Aus |
+| Auto-Quellmodus | Große Dateien im Quellmodus öffnen — Dateien über 1 MB oder Markdown mit 1.200+ geschätzten Blöcken (überspringt WYSIWYG für flüssige Performance). Über die Statusleiste können Sie jederzeit zu WYSIWYG wechseln | Ein | Ein / Aus |
 | Warnen ab Größe | Vor dem Öffnen von Dateien über 5 MB einen Bestätigungsdialog anzeigen. Dateien ab 50 MB werden immer abgelehnt | Ein | Ein / Aus |
 
 Siehe [Große Dateien](/de/guide/large-files) für die vollständige Aufschlüsselung des Umgangs mit großen Dateien.

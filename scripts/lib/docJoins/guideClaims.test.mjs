@@ -52,6 +52,7 @@ describe("each claim fails when one side drifts", () => {
     ["OS file associations", "tauriConf", (s) => s.replace('"ext": ["toml"]', '"ext": ["toml", "ini"]'), /tauri.conf.json has `.toml, .ini = TOML Document`/],
     ["external-editor names", "programNames", (s) => s.replace(/^ *"zed",\n/m, ""), /`zed` is named as a known editor but is not in KNOWN_EDITORS/],
     ["MCP tool count", "mcpToolsGuide", (s) => s.replace("exposes **nine composite MCP tools**", "exposes **eight composite MCP tools**"), /the guide says 8, the code says 9/],
+    ["block-density threshold", "fileSizeThresholds", (s) => s.replace("SOURCE_MODE_DEFAULT_BLOCKS: 1200", "SOURCE_MODE_DEFAULT_BLOCKS: 900"), /block-density threshold \(blocks\): the guide says 1200, the code says 900/],
   ];
 
   it("covers every claim in the table", () => {

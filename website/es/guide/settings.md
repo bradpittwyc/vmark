@@ -142,7 +142,7 @@ Dos espacios es el estilo de salto de línea forzado más compatible — funcion
 
 | Configuración | Descripción | Predeterminado | Opciones |
 |---------------|-------------|----------------|---------|
-| Modo Fuente automático | Abre los archivos de más de 1 MB en modo Fuente (omite WYSIWYG para mantener un rendimiento fluido). Puedes cambiar a WYSIWYG desde la barra de estado en cualquier momento | Activado | Activado / Desactivado |
+| Modo Fuente automático | Abre los archivos grandes en modo Fuente — archivos de más de 1 MB o markdown con 1.200+ bloques estimados (omite WYSIWYG para mantener un rendimiento fluido). Puedes cambiar a WYSIWYG desde la barra de estado en cualquier momento | Activado | Activado / Desactivado |
 | Avisar por encima del tamaño | Mostrar un aviso de confirmación antes de abrir archivos de más de 5 MB. Los archivos de 50 MB o más siempre se rechazan | Activado | Activado / Desactivado |
 
 Consulta [Archivos Grandes](/es/guide/large-files) para el desglose completo de cómo se manejan los archivos grandes.

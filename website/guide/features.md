@@ -73,7 +73,7 @@ Undo and redo cross the WYSIWYG ⇄ Source boundary. Every mode switch records a
 
 ### Large Files
 
-VMark auto-opens files over 1 MB in Source mode for a sub-second open, warns before touching files above 5 MB, and refuses files over 50 MB. See the [Large Files](./large-files.md) guide for thresholds and settings.
+VMark auto-opens large files in Source mode for a sub-second open — files over 1 MB, or block-dense markdown with 1,200+ estimated blocks — warns before touching files above 5 MB, and refuses files over 50 MB. See the [Large Files](./large-files.md) guide for thresholds and settings.
 
 ### Source Peek
 

@@ -142,7 +142,7 @@ Deux espaces est le style de saut de ligne dur le plus compatible — il fonctio
 
 | Paramètre | Description | Par défaut | Options |
 |-----------|-------------|------------|---------|
-| Mode Source automatique | Ouvrir les fichiers de plus de 1 Mo en mode Source (saute le WYSIWYG pour préserver la fluidité des performances). Vous pouvez passer en WYSIWYG depuis la barre d'état à tout moment | Activé | Activé / Désactivé |
+| Mode Source automatique | Ouvrir les fichiers volumineux en mode Source — fichiers de plus de 1 Mo ou markdown avec 1 200+ blocs estimés (saute le WYSIWYG pour préserver la fluidité des performances). Vous pouvez passer en WYSIWYG depuis la barre d'état à tout moment | Activé | Activé / Désactivé |
 | Avertir au-dessus de la taille | Afficher une invite de confirmation avant d'ouvrir des fichiers de plus de 5 Mo. Les fichiers de 50 Mo ou plus sont toujours refusés | Activé | Activé / Désactivé |
 
 Voir [Fichiers volumineux](/fr/guide/large-files) pour la ventilation complète de la façon dont les fichiers volumineux sont gérés.
