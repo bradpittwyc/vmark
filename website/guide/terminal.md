@@ -195,6 +195,22 @@ Standard shell shortcuts like `Ctrl+R` (reverse history search in zsh/bash) work
 
 When the workspace root changes after the terminal is already running, idle sessions automatically `cd` to the new root. A session busy with a command (say, `vim` or `less`) is not interrupted: it changes directory once the command finishes, which needs [shell integration](#shell-integration) to detect. With the [workspace rail](/guide/workspace-rail) on, sessions that belong to a workspace keep their own directory.
 
+## AI CLI tools and their own browser access
+
+An AI CLI tool such as Claude Code or Codex CLI runs as an ordinary program in the terminal. VMark gives it three separate things, and keeping them apart makes a broken setup much easier to diagnose:
+
+| What | Who provides it | What it lets the CLI do |
+|---|---|---|
+| The terminal | VMark | Run commands with your login shell and `PATH`, as in any terminal window |
+| VMark MCP | VMark, after you install its configuration in **Settings → Integrations** | Read and write the document open in VMark, through VMark's own MCP tools |
+| Browser tools | The AI client, not VMark | Reach a browser through the client's own integration, such as a Chrome extension or a browser-automation server |
+
+VMark does not configure, proxy or vouch for the browser tools. A browser connection is verified by reading a real page title from the session — a zero exit code and a tool name in the catalog prove neither. Extension installation, desktop-app connectivity, tool discovery and actual page access are four separate checks.
+
+Restart boundaries matter. A freshly started CLI process may still talk to a shared background app-server started earlier, so the client version and the server version can differ; record both when troubleshooting. VMark's terminal does not restart or isolate those processes for you.
+
+Do not enable remote debugging, copy trust overrides, or loosen native-bridge checks to make a browser connection work. Those widen the permission model for every page the browser can reach, and a result obtained that way is not a setup recipe.
+
 ## Microphone, camera and Apple Events on macOS
 
 Programs you run in the integrated terminal can ask for the microphone, the camera, or permission to control other apps (Apple Events, used by `osascript`). macOS asks under VMark's name, because it treats VMark as the app responsible for everything its terminal starts. Allow access when macOS asks; you can change it later in **System Settings → Privacy & Security** under **Microphone**, **Camera** or **Automation**. The request happens when a program first uses the resource, not when you open the terminal.

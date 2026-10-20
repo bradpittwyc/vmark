@@ -202,6 +202,22 @@ Standard-Shell-Kürzel wie `Strg+R` (Rückwärtshistorie-Suche in zsh/bash) funk
 
 Wenn sich das Arbeitsbereichsstammverzeichnis ändert, nachdem das Terminal bereits läuft, wechseln untätige Sitzungen automatisch per `cd` zum neuen Stammverzeichnis. Eine Sitzung, die mit einem Befehl beschäftigt ist (etwa `vim` oder `less`), wird nicht unterbrochen: Sie wechselt das Verzeichnis, sobald der Befehl beendet ist, was [Shell-Integration](#shell-integration) zur Erkennung voraussetzt. Mit eingeschalteter [Workspace-Leiste](/de/guide/workspace-rail) behalten Sitzungen, die zu einem Arbeitsbereich gehören, ihr eigenes Verzeichnis.
 
+## KI-CLI-Tools und ihr eigener Browserzugriff
+
+Ein KI-CLI-Tool wie Claude Code oder Codex CLI läuft als gewöhnliches Programm im Terminal. VMark gibt ihm drei getrennte Dinge, deren Unterscheidung ein fehlerhaftes Setup deutlich leichter diagnostizierbar macht:
+
+| Was | Wer es bereitstellt | Was es der CLI erlaubt |
+|---|---|---|
+| Das Terminal | VMark | Befehle mit Ihrer Login-Shell und Ihrem `PATH` ausführen, wie in jedem Terminalfenster |
+| VMark MCP | VMark, nachdem Sie seine Konfiguration unter **Einstellungen → Integrationen** installiert haben | Das in VMark geöffnete Dokument über VMarks eigene MCP-Tools lesen und schreiben |
+| Browser-Tools | Der KI-Client, nicht VMark | Über die eigene Integration des Clients auf einen Browser zugreifen, etwa eine Chrome-Erweiterung oder einen Browser-Automatisierungsdienst |
+
+VMark konfiguriert, vermittelt und verbürgt die Browser-Tools nicht. Eine Browser-Verbindung gilt als bestätigt, wenn ein echter Seitentitel aus der Sitzung gelesen wird — ein Exit-Code 0 und ein Toolname im Katalog beweisen keines von beidem. Erweiterungsinstallation, Konnektivität der Desktop-App, Tool-Erkennung und tatsächlicher Seitenzugriff sind vier getrennte Prüfungen.
+
+Neustartgrenzen sind wichtig. Ein frisch gestarteter CLI-Prozess kann weiterhin mit einem gemeinsam genutzten Hintergrund-App-Server sprechen, der früher gestartet wurde; Client- und Serverversion können daher abweichen. Halten Sie beide bei der Fehlersuche fest. VMarks Terminal startet diese Prozesse weder neu noch isoliert es sie für Sie.
+
+Aktivieren Sie kein Remote-Debugging, kopieren Sie keine Trust-Overrides und lockern Sie keine Native-Bridge-Prüfungen, um eine Browser-Verbindung zum Laufen zu bringen. Das erweitert das Berechtigungsmodell für jede Seite, die der Browser erreichen kann, und ein so erzieltes Ergebnis ist kein Setup-Rezept.
+
 ## Mikrofon, Kamera und Apple Events unter macOS
 
 Programme, die Sie im integrierten Terminal ausführen, können das Mikrofon, die Kamera oder die Erlaubnis anfordern, andere Apps zu steuern (Apple Events, die `osascript` verwendet). macOS fragt im Namen von VMark, weil es VMark als verantwortliche App für alles behandelt, was das Terminal startet. Erlauben Sie den Zugriff, wenn macOS fragt; ändern können Sie ihn später unter **Systemeinstellungen → Datenschutz & Sicherheit** bei **Mikrofon**, **Kamera** oder **Automation**. Die Anfrage erfolgt, wenn ein Programm die Ressource zum ersten Mal nutzt, nicht beim Öffnen des Terminals.
