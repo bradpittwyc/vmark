@@ -327,7 +327,7 @@ Não há etapa de prévia para `document.write`, `selection.set` ou `workflow.ap
 
 Toda mutação de documento feita pela IA — `document.write`, `document.transform`, `selection.set` e `workflow.apply_patch` — primeiro tira um snapshot do conteúdo que está prestes a substituir. O botão de **histórico** na barra de status abre um popover que lista, para a aba em foco, quando cada escrita da IA aconteceu e qual ferramenta a fez, com um **Restaurar ao estado anterior a esta escrita** de um clique em cada linha e uma ação **Limpar o histórico desta aba**. Restaurar coloca o conteúdo anterior de volta e avança a revisão do documento, então um cliente de IA que ainda tenha a revisão antiga recebe `STALE` na próxima escrita em vez de sobrescrever a sua restauração.
 
-Os pontos de verificação são mantidos por arquivo — 50 por arquivo e 5 MiB no total — e persistidos em `mcp-checkpoints.jsonl` no diretório de dados do aplicativo VMark, então sobrevivem a uma reinicialização. Documentos sem título têm pontos de verificação por aba.
+Os pontos de verificação são mantidos por arquivo — 50 por arquivo e 5 MiB no total — e persistidos em `mcp-checkpoints.jsonl` no diretório de dados do aplicativo VMark, então sobrevivem a uma reinicialização. O arquivo contém o texto anterior completo de cada edição registrada e é criado acessível apenas ao proprietário (`0600` no macOS e no Linux). O rodapé do painel mostra quanto o arquivo ocupa no disco e limpa todo o armazenamento — todos os arquivos e todas as janelas — em uma única ação. Documentos sem título têm pontos de verificação por aba.
 
 ## Notas de Segurança
 

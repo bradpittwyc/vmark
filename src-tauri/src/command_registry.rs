@@ -99,6 +99,7 @@ macro_rules! all_commands {
             mcp_bridge::commands::mcp_bridge_respond,
             mcp_bridge::commands::mcp_bridge_set_window_workspace,
             mcp_bridge::commands::mcp_bridge_heartbeat,
+            mcp_bridge::checkpoint_store::mcp_checkpoint_store_init,
             mcp_bridge::path_guard::mcp_bridge_check_path,
             mcp_config::commands::mcp_config_diagnose,
             mcp_config::commands::mcp_config_preview,

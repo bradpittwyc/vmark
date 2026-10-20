@@ -328,7 +328,7 @@ Für `document.write`, `selection.set` oder `workflow.apply_patch` gibt es keine
 
 Jede KI-Änderung an einem Dokument — `document.write`, `document.transform`, `selection.set` und `workflow.apply_patch` — sichert zuerst den Inhalt, den sie gleich ersetzt. Die Schaltfläche **Verlauf** in der Statusleiste öffnet ein Popover, das für den fokussierten Tab auflistet, wann jeder KI-Schreibvorgang stattfand und welches Tool ihn ausführte, mit einem Ein-Klick-**Auf den Stand vor diesem Schreibvorgang zurücksetzen** in jeder Zeile und einer Aktion **Verlauf für diesen Tab löschen**. Das Zurücksetzen stellt den früheren Inhalt wieder her und erhöht die Revision des Dokuments, sodass ein KI-Client, der noch die alte Revision hält, beim nächsten Schreiben `STALE` erhält, statt Ihre Wiederherstellung zu überschreiben.
 
-Prüfpunkte werden pro Datei aufbewahrt — 50 pro Datei und insgesamt 5 MiB — und in `mcp-checkpoints.jsonl` im App-Datenverzeichnis von VMark gespeichert, sodass sie einen Neustart überstehen. Unbenannte Dokumente werden pro Tab gesichert.
+Prüfpunkte werden pro Datei aufbewahrt — 50 pro Datei und insgesamt 5 MiB — und in `mcp-checkpoints.jsonl` im App-Datenverzeichnis von VMark gespeichert, sodass sie einen Neustart überstehen. Die Datei enthält den vollständigen vorherigen Text jeder gesicherten Bearbeitung und wird nur für den Eigentümer zugänglich (`0600` unter macOS und Linux) angelegt. Die Fußzeile des Popovers zeigt, wie viel Platz die Datei auf der Festplatte belegt, und löscht den gesamten Speicher — alle Dateien und alle Fenster — mit einer Aktion. Unbenannte Dokumente werden pro Tab gesichert.
 
 ## Sicherheitshinweise
 

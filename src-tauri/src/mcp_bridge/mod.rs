@@ -12,6 +12,7 @@
 
 mod accept_loop;
 mod bind;
+pub(crate) mod checkpoint_store;
 mod coherence_answers;
 pub mod commands;
 mod connection;

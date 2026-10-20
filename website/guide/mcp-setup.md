@@ -327,7 +327,7 @@ There is no preview step for `document.write`, `selection.set` or `workflow.appl
 
 Every AI document mutation — `document.write`, `document.transform`, `selection.set` and `workflow.apply_patch` — first snapshots the content it is about to replace. The **history** button in the status bar opens a popover listing, for the focused tab, when each AI write happened and which tool made it, with a one-click **Restore to before this write** on every row and a **Clear history for this tab** action. Restoring puts the earlier content back and bumps the document's revision, so an AI client still holding the old revision gets `STALE` on its next write instead of overwriting your restore.
 
-Checkpoints are kept per file — 50 per file and 5 MiB in total — and persisted to `mcp-checkpoints.jsonl` in VMark's app data directory, so they survive a restart. Untitled documents are checkpointed per tab.
+Checkpoints are kept per file — 50 per file and 5 MiB in total — and persisted to `mcp-checkpoints.jsonl` in VMark's app data directory, so they survive a restart. The file holds the full previous text of every recorded edit and is created owner-only (`0600` on macOS and Linux). The popover footer shows how much space the file occupies on disk and clears the whole store — every file and every window — in one action. Untitled documents are checkpointed per tab.
 
 ## Security Notes
 
