@@ -11,6 +11,35 @@ section as part of the version bump (`.claude/rules/40-version-bump.md`).
 
 ## [Unreleased]
 
+## [0.9.103] - 2026-10-20
+
+### Fixed
+
+- Opening a workspace no longer deletes the `.vmark` folder inside it. VMark
+  migrates the old `.vmark/vmark.code-workspace` settings into its own app data
+  and then used to remove that file and the folder — in a repository that
+  tracks them in git, the first open destroyed tracked files with no prompt
+  and no undo (#1579). The legacy file is now left exactly as it was, and a
+  `.vmark` entry in the workspace's excluded folders still applies.
+
+### Changed
+
+- The terminal guide now separates VMark's integrated terminal, VMark's MCP
+  tools, and the browser tools an AI client such as Codex CLI may have of its
+  own. It also explains how to verify that a browser connection really read the
+  page, and why remote debugging or copied trust overrides are not the way to
+  make one work (#1571).
+
+### Security
+
+- The edit-checkpoint history VMark keeps for AI changes is now private to your
+  user account (`0600` on macOS and Linux) and can be inspected and cleared
+  from the status-bar history popover. Its footer shows how much space the
+  checkpoint file occupies on disk, and **Clear all checkpoint history**
+  removes it for every file and every open window (#1580). Checkpoints still
+  hold the full previous text of each recorded edit — that text is what restore
+  uses.
+
 ## [0.9.102] - 2026-10-20
 
 ### Fixed
@@ -339,7 +368,8 @@ section as part of the version bump (`.claude/rules/40-version-bump.md`).
 
 - Raised the `markdown-it` version floor past GHSA-253c-mchw-3w2r.
 
-[Unreleased]: https://github.com/xiaolai/vmark/compare/v0.9.102...HEAD
+[Unreleased]: https://github.com/xiaolai/vmark/compare/v0.9.103...HEAD
+[0.9.103]: https://github.com/xiaolai/vmark/releases/tag/v0.9.103
 [0.9.102]: https://github.com/xiaolai/vmark/releases/tag/v0.9.102
 [0.9.101]: https://github.com/xiaolai/vmark/releases/tag/v0.9.101
 [0.9.100]: https://github.com/xiaolai/vmark/releases/tag/v0.9.100
