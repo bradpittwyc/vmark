@@ -1,16 +1,42 @@
 // McpHistoryButton — render, popover toggle, restore action.
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 vi.mock("@/services/persistence/workspaceStorage", () => ({
   getCurrentWindowLabel: () => "main",
 }));
 
-vi.mock("@/stores/mcpCheckpointPersistence", () => ({
+const persistenceMocks = vi.hoisted(() => ({
   rewriteAll: vi.fn(async () => undefined),
   clearCheckpointsOnDisk: vi.fn(async () => undefined),
+  checkpointStoreInfo: vi.fn(async () => ({
+    path: "/app/data/mcp-checkpoints.jsonl",
+    sizeBytes: 2048,
+  })),
+}));
+vi.mock("@/stores/mcpCheckpointPersistence", () => persistenceMocks);
+
+const eventMocks = vi.hoisted(() => {
+  let handler: (() => void) | null = null;
+  return {
+    emit: vi.fn(async () => undefined),
+    listen: vi.fn(async (_event: string, cb: () => void) => {
+      handler = cb;
+      return () => {
+        handler = null;
+      };
+    }),
+    fire: () => handler?.(),
+    reset: () => {
+      handler = null;
+    },
+  };
+});
+vi.mock("@tauri-apps/api/event", () => ({
+  emit: eventMocks.emit,
+  listen: eventMocks.listen,
 }));
 
 const toastMock = vi.hoisted(() => ({
@@ -49,6 +75,11 @@ function reset() {
   useDocumentStore.getState().initDocument("tab-1", "current", "/notes.md");
   toastMock.success.mockClear();
   toastMock.error.mockClear();
+  persistenceMocks.clearCheckpointsOnDisk.mockClear();
+  persistenceMocks.checkpointStoreInfo.mockClear();
+  eventMocks.emit.mockClear();
+  eventMocks.listen.mockClear();
+  eventMocks.reset();
 }
 
 function seedCheckpoint(overrides: Partial<{ contentBefore: string }> = {}) {
@@ -153,5 +184,55 @@ describe("McpHistoryButton", () => {
     const remaining = useMcpStore.getState().checkpoint.checkpoints;
     expect(remaining).toHaveLength(1);
     expect(remaining[0].filePath).toBe("/other.md");
+  });
+
+  it("shows the on-disk store size and a clear-all action", async () => {
+    seedCheckpoint();
+    const user = userEvent.setup();
+    render(<McpHistoryButton />);
+    await user.click(
+      screen.getByRole("button", { name: /MCP write history/i }),
+    );
+
+    expect(await screen.findByText(/2\.0 KB on disk/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Clear all checkpoint history/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("clear all wipes every checkpoint on disk and tells other windows", async () => {
+    seedCheckpoint();
+    useMcpStore.getState().checkpointPush({
+      tabId: "tab-2",
+      filePath: "/other.md",
+      tool: "document.write",
+      description: "elsewhere",
+      contentBefore: "x",
+      revisionBefore: "rev-A",
+      revisionAfter: "rev-B",
+    });
+    const user = userEvent.setup();
+    render(<McpHistoryButton />);
+    await user.click(
+      screen.getByRole("button", { name: /MCP write history/i }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: /Clear all checkpoint history/i }),
+    );
+
+    expect(useMcpStore.getState().checkpoint.checkpoints).toHaveLength(0);
+    expect(persistenceMocks.clearCheckpointsOnDisk).toHaveBeenCalledWith();
+    expect(eventMocks.emit).toHaveBeenCalledWith("mcp:checkpoints-cleared");
+    expect(toastMock.success).toHaveBeenCalled();
+  });
+
+  it("drops this window's in-memory history when another window clears the store", async () => {
+    seedCheckpoint();
+    render(<McpHistoryButton />);
+    await waitFor(() => expect(eventMocks.listen).toHaveBeenCalled());
+
+    eventMocks.fire();
+
+    expect(useMcpStore.getState().checkpoint.checkpoints).toHaveLength(0);
   });
 });

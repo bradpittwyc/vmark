@@ -14,6 +14,11 @@ vi.mock("@tauri-apps/api/path", () => ({
   join: vi.fn(async (...parts: string[]) => parts.join("/")),
 }));
 
+const invokeMock = vi.hoisted(() =>
+  vi.fn(async () => ({ path: "/app/data/mcp-checkpoints.jsonl", sizeBytes: 0 })),
+);
+vi.mock("@tauri-apps/api/core", () => ({ invoke: invokeMock }));
+
 vi.mock("@tauri-apps/plugin-fs", () => fsMocks);
 
 import { useMcpStore } from "../mcpStore";
@@ -22,6 +27,7 @@ import {
   appendCheckpoint,
   rewriteAll,
   clearCheckpointsOnDisk,
+  checkpointStoreInfo,
 } from "../mcpCheckpointPersistence";
 
 function reset() {
@@ -34,6 +40,8 @@ function reset() {
   fsMocks.readTextFile.mockResolvedValue("");
   fsMocks.writeTextFile.mockResolvedValue(undefined);
   fsMocks.mkdir.mockResolvedValue(undefined);
+  invokeMock.mockReset();
+  invokeMock.mockResolvedValue({ path: "/app/data/mcp-checkpoints.jsonl", sizeBytes: 0 });
 }
 
 const sampleCp = {
@@ -315,5 +323,37 @@ describe("clearCheckpointsOnDisk (multi-window safe)", () => {
     const wrote = fsMocks.writeTextFile.mock.calls.at(-1)?.[1] as string;
     expect(wrote).toContain("cp-keep");
     expect(wrote).not.toContain("foo");
+  });
+});
+
+describe("private store hardening", () => {
+  beforeEach(reset);
+
+  it("asks Rust to create the 0600 store before hydrate reads it", async () => {
+    await hydrateCheckpoints();
+    expect(invokeMock).toHaveBeenCalledWith("mcp_checkpoint_store_init");
+  });
+
+  it("asks Rust to create the 0600 store before an append writes", async () => {
+    await appendCheckpoint(sampleCp);
+    expect(invokeMock).toHaveBeenCalledWith("mcp_checkpoint_store_init");
+    expect(fsMocks.writeTextFile).toHaveBeenCalled();
+  });
+
+  it("still writes when the hardening call fails (the safety net outranks the mode)", async () => {
+    invokeMock.mockRejectedValue(new Error("backend unavailable"));
+    await appendCheckpoint(sampleCp);
+    expect(fsMocks.writeTextFile).toHaveBeenCalled();
+  });
+
+  it("reports the store path and size for the history popover", async () => {
+    invokeMock.mockResolvedValue({
+      path: "/app/data/mcp-checkpoints.jsonl",
+      sizeBytes: 2048,
+    });
+    await expect(checkpointStoreInfo()).resolves.toEqual({
+      path: "/app/data/mcp-checkpoints.jsonl",
+      sizeBytes: 2048,
+    });
   });
 });

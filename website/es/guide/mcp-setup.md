@@ -327,7 +327,7 @@ No hay paso de vista previa para `document.write`, `selection.set` ni `workflow.
 
 Cada modificación de documento hecha por la IA — `document.write`, `document.transform`, `selection.set` y `workflow.apply_patch` — primero guarda una instantánea del contenido que está a punto de reemplazar. El botón **historial** de la barra de estado abre un panel emergente que enumera, para la pestaña enfocada, cuándo se produjo cada escritura de la IA y qué herramienta la hizo, con un **Restaurar al estado anterior a esta escritura** de un clic en cada fila y una acción **Borrar el historial de esta pestaña**. Restaurar devuelve el contenido anterior e incrementa la revisión del documento, de modo que un cliente de IA que aún tenga la revisión antigua recibe `STALE` en su siguiente escritura en lugar de sobrescribir tu restauración.
 
-Los puntos de control se guardan por archivo — 50 por archivo y 5 MiB en total — y se conservan en `mcp-checkpoints.jsonl`, en el directorio de datos de la aplicación VMark, así que sobreviven a un reinicio. Los documentos sin título se guardan por pestaña.
+Los puntos de control se guardan por archivo — 50 por archivo y 5 MiB en total — y se conservan en `mcp-checkpoints.jsonl`, en el directorio de datos de la aplicación VMark, así que sobreviven a un reinicio. El archivo contiene el texto anterior completo de cada edición registrada y se crea accesible solo para el propietario (`0600` en macOS y Linux). El pie del panel muestra cuánto ocupa el archivo en disco y borra todo el almacén — todos los archivos y todas las ventanas — en una sola acción. Los documentos sin título se guardan por pestaña.
 
 ## Notas de Seguridad
 
