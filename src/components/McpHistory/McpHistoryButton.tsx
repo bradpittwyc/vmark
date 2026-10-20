@@ -15,9 +15,13 @@
  *     concurrent MCP client sees a STALE on its next write — exactly
  *     the same conflict semantic as a manual edit.
  *   - The popover uses position: fixed and the shared popup CSS tokens.
+ *   - The footer shows the persisted store's on-disk size and clears every
+ *     file's history across windows; the rows above stay per-tab.
  *
  * @coordinates-with stores/mcpStore.ts — checkpoint state
  * @coordinates-with stores/mcpCheckpointPersistence.ts — disk rewrite on restore
+ * @coordinates-with components/McpHistory/McpHistoryStoreFooter.tsx — store size and clear-all
+ * @coordinates-with components/McpHistory/useCheckpointClearBroadcast.ts — cross-window clear
  * @coordinates-with stores/documentStore.ts — setContent for restore
  * @coordinates-with stores/documentStore/revision.ts — bump on restore
  * @module components/McpHistory/McpHistoryButton
@@ -36,6 +40,8 @@ import { useRevisionStore } from "@/stores/documentStore";
 import { useTabStore } from "@/stores/tabStore";
 import { getCurrentWindowLabel } from "@/services/persistence/workspaceStorage";
 import { imeToast as toast } from "@/services/ime/imeToast";
+import { McpHistoryStoreFooter } from "./McpHistoryStoreFooter";
+import { useCheckpointClearBroadcast } from "./useCheckpointClearBroadcast";
 import "./mcp-history.css";
 import { mcpBridgeError } from "@/utils/debug";
 
@@ -76,6 +82,10 @@ export function McpHistoryButton(): React.ReactElement {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Always mounted (unlike the popover), so a clear in another window is heard
+  // even when this window's history is closed.
+  useCheckpointClearBroadcast();
 
   // Subscribe to the store so the badge count updates live.
   const checkpoints = useMcpStore((s) => s.checkpoint.checkpoints);
@@ -238,6 +248,7 @@ export function McpHistoryButton(): React.ReactElement {
               ))
             )}
           </div>
+          <McpHistoryStoreFooter count={checkpoints.length} />
         </div>
       )}
     </>

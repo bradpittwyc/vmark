@@ -327,7 +327,7 @@ Il n'y a pas d'étape d'aperçu pour `document.write`, `selection.set` ou `workf
 
 Chaque mutation de document par l'IA — `document.write`, `document.transform`, `selection.set` et `workflow.apply_patch` — commence par prendre un instantané du contenu qu'elle s'apprête à remplacer. Le bouton **historique** de la barre d'état ouvre une fenêtre contextuelle qui liste, pour l'onglet actif, quand chaque écriture de l'IA a eu lieu et quel outil l'a effectuée, avec en un clic **Restaurer l'état d'avant cette écriture** sur chaque ligne et une action **Effacer l'historique de cet onglet**. La restauration remet le contenu antérieur en place et incrémente la révision du document, de sorte qu'un client IA qui détient encore l'ancienne révision reçoit `STALE` à sa prochaine écriture au lieu d'écraser votre restauration.
 
-Les points de contrôle sont conservés par fichier — 50 par fichier et 5 Mio au total — et persistés dans `mcp-checkpoints.jsonl` dans le répertoire de données de l'application VMark, ils survivent donc à un redémarrage. Les documents sans titre ont des points de contrôle par onglet.
+Les points de contrôle sont conservés par fichier — 50 par fichier et 5 Mio au total — et persistés dans `mcp-checkpoints.jsonl` dans le répertoire de données de l'application VMark, ils survivent donc à un redémarrage. Le fichier contient le texte précédent complet de chaque modification enregistrée et est créé accessible au seul propriétaire (`0600` sous macOS et Linux). Le pied du panneau indique l'espace occupé par le fichier sur le disque et efface tout le stockage — tous les fichiers et toutes les fenêtres — en une seule action. Les documents sans titre ont des points de contrôle par onglet.
 
 ## Notes de sécurité
 

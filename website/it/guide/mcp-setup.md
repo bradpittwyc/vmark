@@ -327,7 +327,7 @@ Non c'è un passaggio di anteprima per `document.write`, `selection.set` o `work
 
 Ogni modifica di un documento da parte dell'IA — `document.write`, `document.transform`, `selection.set` e `workflow.apply_patch` — salva prima un'istantanea del contenuto che sta per sostituire. Il pulsante **cronologia** nella barra di stato apre un popover che elenca, per la scheda attiva, quando è avvenuta ogni scrittura dell'IA e quale strumento l'ha eseguita, con **Ripristina allo stato precedente a questa scrittura** in un clic su ogni riga e un'azione **Cancella la cronologia di questa scheda**. Il ripristino rimette il contenuto precedente e incrementa la revisione del documento, così un client IA che conserva ancora la vecchia revisione riceve `STALE` alla scrittura successiva invece di sovrascrivere il tuo ripristino.
 
-I checkpoint vengono conservati per file — 50 per file e 5 MiB in totale — e salvati in `mcp-checkpoints.jsonl` nella directory dati dell'app VMark, quindi sopravvivono a un riavvio. I documenti senza titolo hanno checkpoint per scheda.
+I checkpoint vengono conservati per file — 50 per file e 5 MiB in totale — e salvati in `mcp-checkpoints.jsonl` nella directory dati dell'app VMark, quindi sopravvivono a un riavvio. Il file contiene il testo precedente completo di ogni modifica registrata e viene creato accessibile solo al proprietario (`0600` su macOS e Linux). Il piè di pagina del pannello mostra quanto spazio occupa il file su disco e cancella l'intero archivio — tutti i file e tutte le finestre — con una sola azione. I documenti senza titolo hanno checkpoint per scheda.
 
 ## Note sulla Sicurezza
 

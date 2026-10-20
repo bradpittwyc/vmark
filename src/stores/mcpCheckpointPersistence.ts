@@ -33,11 +33,16 @@
  *     can never double-count a checkpoint.
  *   - Non-blocking writes: appendCheckpoint is fire-and-forget with
  *     error logging — a failed disk write must not break the MCP path.
+ *   - Owner-only store: before any read or write, Rust creates (or tightens)
+ *     the file `0600` at a path the frontend cannot choose. If that call fails,
+ *     the checkpoint still lands — the restore safety net outranks the mode.
  *
  * @coordinates-with stores/mcpStore.ts — in-memory state
+ * @coordinates-with src-tauri/src/mcp_bridge/checkpoint_store.rs — the 0600 store
  * @module stores/mcpCheckpointPersistence
  */
 
+import { invoke } from "@tauri-apps/api/core";
 import { appDataDir, join } from "@tauri-apps/api/path";
 import {
   exists,
@@ -53,7 +58,30 @@ import { mcpBridgeError, mcpBridgeLog } from "@/utils/debug";
 
 const FILE_NAME = "mcp-checkpoints.jsonl";
 
+/** Where the checkpoint log lives and how large it is on disk. */
+export interface CheckpointStoreInfo {
+  path: string;
+  sizeBytes: number;
+}
+
 let cachedPath: string | null = null;
+
+/**
+ * Create the store `0600` (or tighten a file an older release left at 0644).
+ * Rust resolves the directory itself, so no path crosses the IPC boundary.
+ */
+export async function checkpointStoreInfo(): Promise<CheckpointStoreInfo> {
+  return invoke<CheckpointStoreInfo>("mcp_checkpoint_store_init");
+}
+
+/** Harden the store, but never let a permissions problem stop a checkpoint. */
+async function hardenStore(): Promise<void> {
+  try {
+    await checkpointStoreInfo();
+  } catch (error) {
+    mcpBridgeError("Failed to harden the MCP checkpoint store:", error);
+  }
+}
 
 /**
  * Single writer queue: appends and rewrites are strictly ordered so they
@@ -120,6 +148,7 @@ async function resolvePath(): Promise<string> {
 export async function hydrateCheckpoints(): Promise<void> {
   if (useMcpStore.getState().checkpoint.hydrated) return;
   try {
+    await hardenStore();
     const path = await resolvePath();
     const checkpoints = await readDedupedFromDisk(path);
     // Sort newest-first to match the store's invariant.
@@ -150,6 +179,7 @@ export async function appendCheckpoint(
 ): Promise<void> {
   return enqueueWrite(async () => {
     try {
+      await hardenStore();
       const path = await resolvePath();
       await writeTextFile(path, JSON.stringify(cp) + "\n", { append: true });
       mcpBridgeLog("Appended checkpoint", cp.id, cp.tool);
@@ -171,6 +201,7 @@ export async function appendCheckpoint(
 export async function rewriteAll(): Promise<void> {
   return enqueueWrite(async () => {
     try {
+      await hardenStore();
       const path = await resolvePath();
       // Union disk + memory by id so a concurrent append from another
       // window is not dropped by this compaction (multi-window safety).
@@ -210,6 +241,7 @@ export async function clearCheckpointsOnDisk(filter?: {
     try {
       const path = await resolvePath();
       if (!(await exists(path))) return;
+      await hardenStore();
       const text = await readTextFile(path);
       const kept: string[] = [];
       for (const line of text.split("\n")) {
