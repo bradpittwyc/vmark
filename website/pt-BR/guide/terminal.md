@@ -198,6 +198,22 @@ Os atalhos padrão do shell como `Ctrl+R` (pesquisa de histórico reverso no zsh
 
 Quando a raiz da área de trabalho muda enquanto o terminal já está em execução, as sessões ociosas fazem automaticamente `cd` para a nova raiz. Uma sessão ocupada com um comando (por exemplo, `vim` ou `less`) não é interrompida: ela muda de diretório quando o comando termina, o que requer a [integração com o shell](#integracao-com-o-shell) para ser detectado. Com a [barra de espaços de trabalho](/pt-BR/guide/workspace-rail) ativada, as sessões que pertencem a uma área de trabalho mantêm seu próprio diretório.
 
+## Ferramentas CLI de IA e o próprio acesso ao navegador
+
+Uma ferramenta CLI de IA como Claude Code ou Codex CLI é executada como um programa comum no terminal. O VMark oferece três coisas distintas a ela, e separá-las torna muito mais fácil diagnosticar uma configuração quebrada:
+
+| O quê | Quem fornece | O que permite à CLI |
+|---|---|---|
+| O terminal | VMark | Executar comandos com o seu shell de login e o seu `PATH`, como em qualquer janela de terminal |
+| VMark MCP | VMark, depois que você instalar a configuração dele em **Configurações → Integrações** | Ler e gravar o documento aberto no VMark por meio das próprias ferramentas MCP do VMark |
+| Ferramentas de navegador | O cliente de IA, não o VMark | Acessar um navegador pela integração própria do cliente, como uma extensão do Chrome ou um servidor de automação de navegador |
+
+O VMark não configura, não intermedeia nem garante as ferramentas de navegador. Uma conexão de navegador é verificada lendo o título real de uma página na sessão: um código de saída zero e um nome de ferramenta no catálogo não provam nenhum dos dois. Instalação da extensão, conectividade do aplicativo de desktop, descoberta de ferramentas e acesso efetivo à página são quatro verificações separadas.
+
+Os limites de reinicialização importam. Um processo CLI recém-iniciado pode continuar conversando com um servidor de aplicativo compartilhado em segundo plano iniciado antes, então as versões do cliente e do servidor podem diferir; anote as duas ao solucionar problemas. O terminal do VMark não reinicia nem isola esses processos para você.
+
+Não habilite a depuração remota, não copie substituições de confiança nem afrouxe as verificações da ponte nativa para fazer uma conexão de navegador funcionar. Isso amplia o modelo de permissões para todas as páginas que o navegador alcança, e um resultado obtido assim não é uma receita de configuração.
+
 ## Microfone, câmera e Apple Events no macOS
 
 Os programas que você executa no terminal integrado podem solicitar o microfone, a câmera ou permissão para controlar outros apps (Apple Events, usados pelo `osascript`). O macOS pergunta em nome do VMark, porque considera o VMark o app responsável por tudo o que o terminal inicia. Permita o acesso quando o macOS perguntar; você pode alterá-lo depois em **Ajustes do Sistema → Privacidade e Segurança**, em **Microfone**, **Câmera** ou **Automação**. A solicitação acontece quando um programa usa o recurso pela primeira vez, não ao abrir o terminal.

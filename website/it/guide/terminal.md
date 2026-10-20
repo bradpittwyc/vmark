@@ -200,6 +200,22 @@ Le scorciatoie shell standard come `Ctrl+R` (ricerca cronologia inversa in zsh/b
 
 Quando la radice del workspace cambia dopo che il terminale è già in esecuzione, le sessioni inattive eseguono automaticamente `cd` alla nuova radice. Una sessione impegnata in un comando (ad esempio `vim` o `less`) non viene interrotta: cambia directory quando il comando termina, cosa che richiede l'[integrazione della shell](#integrazione-della-shell) per essere rilevata. Con la [barra degli spazi di lavoro](/it/guide/workspace-rail) attiva, le sessioni che appartengono a un workspace mantengono la propria directory.
 
+## Strumenti CLI IA e il loro accesso al browser
+
+Uno strumento CLI IA come Claude Code o Codex CLI viene eseguito come un normale programma nel terminale. VMark gli offre tre cose distinte, e tenerle separate rende molto più semplice diagnosticare una configurazione non funzionante:
+
+| Cosa | Chi lo fornisce | Cosa consente alla CLI |
+|---|---|---|
+| Il terminale | VMark | Eseguire comandi con la tua shell di login e il tuo `PATH`, come in qualsiasi finestra di terminale |
+| VMark MCP | VMark, dopo aver installato la sua configurazione in **Impostazioni → Integrazioni** | Leggere e scrivere il documento aperto in VMark tramite gli strumenti MCP di VMark |
+| Strumenti del browser | Il client IA, non VMark | Raggiungere un browser tramite l'integrazione propria del client, ad esempio un'estensione Chrome o un server di automazione del browser |
+
+VMark non configura, non fa da intermediario e non garantisce gli strumenti del browser. Una connessione al browser si verifica leggendo il titolo reale di una pagina dalla sessione: un codice di uscita zero e un nome di strumento nel catalogo non dimostrano nessuna delle due cose. Installazione dell'estensione, connettività dell'app desktop, rilevamento degli strumenti e accesso effettivo alla pagina sono quattro controlli separati.
+
+I confini di riavvio contano. Un processo CLI appena avviato può ancora parlare con un server applicativo condiviso in background avviato prima, quindi le versioni del client e del server possono differire; annotale entrambe durante la diagnosi. Il terminale di VMark non riavvia né isola quei processi per te.
+
+Non abilitare il debug remoto, non copiare override di fiducia e non allentare i controlli del bridge nativo per far funzionare una connessione al browser. Questo amplia il modello di autorizzazioni per ogni pagina che il browser può raggiungere, e un risultato ottenuto così non è una ricetta di configurazione.
+
 ## Microfono, fotocamera e Apple Events su macOS
 
 I programmi che esegui nel terminale integrato possono richiedere il microfono, la fotocamera o il permesso di controllare altre app (Apple Events, usati da `osascript`). macOS chiede a nome di VMark, perché considera VMark l'app responsabile di tutto ciò che il terminale avvia. Consenti l'accesso quando macOS lo chiede; potrai modificarlo in seguito in **Impostazioni di Sistema → Privacy e sicurezza**, alla voce **Microfono**, **Fotocamera** o **Automazione**. La richiesta avviene quando un programma usa la risorsa per la prima volta, non all'apertura del terminale.
