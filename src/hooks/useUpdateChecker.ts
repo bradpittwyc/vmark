@@ -45,6 +45,7 @@ import { confirmAction } from "@/services/dialogs/confirmAction";
 const ONE_DAY = 24 * 60 * 60 * 1000;
 const ONE_WEEK = 7 * ONE_DAY;
 const STARTUP_CHECK_DELAY_MS = 2000; // Delay to let app initialize before checking
+const PERIODIC_CHECK_INTERVAL_MS = 60 * 60 * 1000; // Check periodically (every 1 hour) while running
 
 // Retry constants
 const MAX_RETRIES = 3;
@@ -147,6 +148,24 @@ export function useUpdateChecker() {
       return () => clearTimeout(timer);
     }
   }, [autoCheckEnabled, checkFrequency, lastCheckTimestamp, doCheckForUpdates]);
+
+  // Periodic background check while the app is running
+  useEffect(() => {
+    if (!autoCheckEnabled || checkFrequency === "manual") return;
+
+    const interval = setInterval(() => {
+      const currentLastCheck = useSettingsStore.getState().update.lastCheckTimestamp;
+      if (shouldCheckNow(autoCheckEnabled, checkFrequency, currentLastCheck)) {
+        retryChainActiveRef.current = true;
+        retryCount.current = 0;
+        doCheckForUpdates().catch((error) => {
+          updateCheckerLog("Periodic auto-check failed:", error);
+        });
+      }
+    }, PERIODIC_CHECK_INTERVAL_MS);
+
+    return () => clearInterval(interval);
+  }, [autoCheckEnabled, checkFrequency, doCheckForUpdates]);
 
   // Show toasts for MANUAL CHECK FEEDBACK only. The update LIFECYCLE
   // (available/ready/stalled/transfer failures) is owned by
